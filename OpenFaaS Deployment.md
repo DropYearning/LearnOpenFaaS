@@ -142,9 +142,9 @@ The `arkade install` command installs OpenFaaS using its official helm chart, bu
 
   - 安装k3d：`brew install k3d`
   
-  - 添加KUBECONFIG环境变量：`export KUBECONFIG="$(k3d get-kubeconfig --name='k3s-default')"`
-  
   - 使用k3d启动一个集群：`k3d create`
+  
+  - 添加KUBECONFIG环境变量：`export KUBECONFIG="$(k3d get-kubeconfig --name='k3s-default')"`
   
   - 检验部署：`kubectl cluster-info`
   
@@ -223,17 +223,31 @@ The `arkade install` command installs OpenFaaS using its official helm chart, bu
     ```
 
 - 登陆OpenFaaS gateway：
-  - `kubectl port-forward svc/gateway -n openfaas 8080:8080` 这个命令将打开一个从集群到本地计算机的隧道，以便您可以访问 OpenFaaS 网关。
-  - `export OPENFAAS_URL="127.0.0.1"`
+  - `export OPENFAAS_URL="127.0.0.1:31112"`
+  - `kubectl port-forward svc/gateway -n openfaas 31112:8080` 这个命令将打开一个从集群到本地计算机的隧道，以便您可以访问 OpenFaaS 网关。
   - 生成登陆密码：`PASSWORD=$(kubectl get secret -n openfaas basic-auth -o jsonpath="{.data.basic-auth-password}" | base64 --decode; echo)`
-  - 输出生成的密码：`echo -n $PASSWORD `
+  - 输出生成的密码：`echo -n $PASSWORD `，复制密码
   - 在CLI中登陆：`faas-cli login --username admin --password-stdin` # This command logs in and saves a file to ~/.openfaas/config.yml
+    - 或者直接输入密码登陆：`faas-cli login --username admin --password xxxxxxxxxxxx`
+  - 访问http://127.0.0.1:31112/ui/，登陆OpenFaaS后台
 
 - 验证OpenFaaS部署完毕:
   - 列出当前OpenFaaS部署的所有函数：`faas-cli list`
-- 在.bashrc中保存OpenFaaS的URL：`export OPENFAAS_URL="127.0.0.1:8080"`
+- 在.bashrc中保存OpenFaaS的URL：`export OPENFAAS_URL="127.0.0.1:31112"`， 将来再次启动UI需要使用命令：`kubectl port-forward svc/gateway -n openfaas 31112:8080`
+- OpenFaaS集群的暂停与恢复：
+  - 暂停：
+    - 在k3d中暂停集群的运行: `k3d stop`
+    - 关闭docker
+  - 恢复：
+    - 打开docker
+    - 启动k3d集群：`k3d start`
+    - 映射OpenFaaS网关：`kubectl port-forward svc/gateway -n openfaas 31112:8080`
+    - 打开 http://127.0.0.1:31112/ui/ 登陆后台或者使用`faas list`验证运行正常
 
-
+> 建议在bashrc中保存下面的环境变量：
+>
+> export KUBECONFIG="$(k3d get-kubeconfig --name='k3s-default')"
+> export OPENFAAS_URL="127.0.0.1:31112"
 
 ## Reference
 
