@@ -1,0 +1,12 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://127.0.0.1:31112
+functions:
+  hello-openfaas:
+    lang: python3
+    handler: ./hello-openfaas
+    image: dockerbbbz/hello-openfaas:latest
+    environment:
+      combine_output: false
+
