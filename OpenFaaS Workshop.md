@@ -710,7 +710,6 @@ or python3-http templates.
     - Examples：
       - 在实验3中，我们引入了请求模块，并使用它调用一个远程 API 来获取国际空间站上宇航员的名字。我们可以使用相同的技术来调用部署在 OpenFaaS 上的另一个函数。
       - 在这里我们部署另外一个函数SentimentAnalysis，该函数可以用于分析句子的情绪是积极的还是消极的。`faas-cli store deploy SentimentAnalysis`
-      - 
     - Pros:
       - functions can make use of each other directly
       - low latency since the functions can access each other on the same network
